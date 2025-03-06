@@ -43,11 +43,16 @@ public class TreeWithArrayOfChildren {
         queue.enqueue(root);
         while (!queue.empty()) {
             TreeNode curr = (TreeNode) queue.dequeue();
-            // FILL IN CODE
+            System.out.print(curr.elem + " ");
+            if (curr.children != null) {
+                for (int i = 0; i < curr.children.length; i++) {
+                    if (curr.children[i] != null)
+                        queue.enqueue(curr.children[i]);
+                }
+            }
 
         }
         System.out.println();
-
         // What to make it a bit more interesting? Print the level of each node too.
     }
 
@@ -76,22 +81,34 @@ public class TreeWithArrayOfChildren {
                     sb.append(serialize(root.children[i]));
                 }
             }
-            sb.append(")");
+            sb.append(") ");
         }
         return sb;
     }
 
     private int numNodes(TreeNode root) {
-        // FILL IN CODE: add a base case and a recursive case - compute the number of nodes recursively
-
-        return 0;
+        if (root == null)
+            return 0;
+        int num = 0;
+        if (root.children != null) {
+            for (int i = 0; i < root.children.length; i++) {
+                num += numNodes(root.children[i]);
+            }
+        }
+        return num + 1;
     }
 
     private int numLeaves(TreeNode root) {
-        // FILL IN CODE: compute the number of leaves recursively
         // Consider using the provided isLeaf method
-
-        return 0;
+        if (root == null)
+            return 0;
+        if (isLeaf(root))
+            return 1;
+        int count = 0;
+        for (TreeNode child: root.children) { // foreach loop
+            count = count + numLeaves(child);
+        }
+        return count;
     }
 
     // Helper method to check if the node is a leaf (no children)
@@ -107,9 +124,14 @@ public class TreeWithArrayOfChildren {
     }
 
     private int numLevels(TreeNode root) {
-        // FILL IN CODE: compute the number of levels recursively
-
-        return 0;
+        // Compute the number of levels recursively
+        int maxChildLevels = 0;
+        if (root.children != null) {
+            for (TreeNode child : root.children) {
+                maxChildLevels = Math.max(maxChildLevels, numLevels(child));
+            }
+        }
+        return maxChildLevels + 1;
     }
 
     /**
@@ -135,6 +157,5 @@ public class TreeWithArrayOfChildren {
         t1.children[2].children[2].children[0] = new TreeNode(0);
         t1.children[2].children[2].children[1] = new TreeNode(6);
         root = t1;
-
     }
 }

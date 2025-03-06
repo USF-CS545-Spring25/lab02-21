@@ -9,7 +9,7 @@ public class TreeWithLinkedListOfChildren {
     private class TreeNode {
         int elem;
         TreeNode leftChild;
-        public TreeNode rightSibling;
+        TreeNode rightSibling;
 
         TreeNode(int elem) {
             this.elem = elem;
@@ -41,9 +41,15 @@ public class TreeWithLinkedListOfChildren {
         queue.enqueue(root);
 
         while(!queue.empty()) {
-            // FILL IN CODE
-
+            TreeNode curr = (TreeNode)queue.dequeue();
+            System.out.print(curr.elem + " ");
+            TreeNode child = curr.leftChild;
+            while (child != null) {
+                queue.enqueue(child);
+                child = child.rightSibling;
+            }
         }
+        System.out.println();
     }
 
 
@@ -58,10 +64,17 @@ public class TreeWithLinkedListOfChildren {
      */
     private int numLevels(TreeNode node) {
         int maxNumLevels = 0;
-        // FILL IN CODE
+        if (node == null)
+            return 0;
+        TreeNode curr = node.leftChild;
+        while (curr != null) {
+            int childsNumLevels = numLevels(curr);
+            if (childsNumLevels > maxNumLevels)
+                maxNumLevels = childsNumLevels;
+            curr = curr.rightSibling;
+        }
+        return maxNumLevels + 1;
 
-
-        return maxNumLevels;
     }
 
     /**
@@ -71,9 +84,14 @@ public class TreeWithLinkedListOfChildren {
      */
     private int numNodes(TreeNode node) {
         int num = 0;
-        // FILL IN CODE
-
-        return num;
+        if (node == null)
+            return 0;
+        TreeNode child = node.leftChild;
+        while (child != null) {
+            num += numNodes(child);
+            child = child.rightSibling;
+        }
+        return num + 1;
     }
 
     /**
@@ -82,10 +100,18 @@ public class TreeWithLinkedListOfChildren {
      * @return number of leaves in the tree with the given root
      */
     private int numLeaves(TreeNode node) {
-        int numLeaves = 0;
-        // FILL IN CODE
+        int num = 0;
+        if (node == null)
+            return 0;
+        if (node.leftChild == null)
+            return 1;
+        TreeNode child = node.leftChild;
+        while (child != null) {
+            num += numLeaves(child);
+            child = child.rightSibling;
+        }
 
-        return numLeaves;
+        return num;
     }
 
     /**
@@ -105,9 +131,15 @@ public class TreeWithLinkedListOfChildren {
 
     private StringBuilder serialize(TreeNode root) {
         StringBuilder sb = new StringBuilder();
-        // FILL IN CODE: return a string builder representing the tree
-        // traverse using preorder, print ) whenever the node has no more children
-
+        if (root != null) {
+            sb.append(root.elem + " ");
+            TreeNode child = root.leftChild;
+            while (child != null)  {
+                sb.append(serialize(child));
+                child = child.rightSibling;
+            }
+            sb.append(") ");
+        }
         return sb;
     }
 
